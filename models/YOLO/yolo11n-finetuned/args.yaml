@@ -1,38 +1,38 @@
 task: detect
 mode: train
-model: C:\Users\hp\Downloads\BMCS 2133 Assignment\Drowning-Detection\models\YOLO\yolo11n.pt
-data: C:\Users\hp\Downloads\BMCS 2133 Assignment\Drowning-Detection\config\yolo\fine_tuning.yaml
-epochs: 2
+model: C:\Users\PC\Downloads\Jie Shen\Drowning-Detection\models\YOLO\yolo11n.pt
+data: C:\Users\PC\Downloads\Jie Shen\Drowning-Detection\config\yolo\fine_tuning.yaml
+epochs: 50
 time: null
 patience: 10
 batch: 16
 imgsz: 640
 save: true
 save_period: 1
-cache: disk
-device: cpu
-workers: 8
-project: C:\Users\hp\Downloads\BMCS 2133 Assignment\Drowning-Detection\models\YOLO
+cache: false
+device: 0
+workers: 12
+project: C:\Users\PC\Downloads\Jie Shen\Drowning-Detection\models\YOLO
 name: yolo11n-finetuned
 exist_ok: true
 pretrained: true
 optimizer: auto
 verbose: true
 seed: 32
-deterministic: true
-single_cls: true
+deterministic: false
+single_cls: false
 rect: false
 cos_lr: false
 close_mosaic: 10
 resume: false
 amp: true
-fraction: 0.01
+fraction: 1
 profile: false
 freeze: null
 multi_scale: false
 overlap_mask: true
 mask_ratio: 4
-dropout: 0.1
+dropout: 0
 val: true
 split: val
 save_json: false
@@ -103,4 +103,4 @@ erasing: 0.4
 crop_fraction: 1.0
 cfg: null
 tracker: botsort.yaml
-save_dir: C:\Users\hp\Downloads\BMCS 2133 Assignment\Drowning-Detection\models\YOLO\yolo11n-finetuned
+save_dir: C:\Users\PC\Downloads\Jie Shen\Drowning-Detection\models\YOLO\yolo11n-finetuned
