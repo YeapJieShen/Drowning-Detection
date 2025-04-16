@@ -1,0 +1,8 @@
+# Dataset paths
+path: C:\Users\hp\Downloads\BMCS 2133 Assignment\Drowning-Detection\data\yolo_training
+train: images\train
+val: images\val
+
+# Classes
+nc: 1
+names: ['person']
