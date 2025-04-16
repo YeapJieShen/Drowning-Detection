@@ -45,7 +45,7 @@ f"""
 **Processor**: {processor}  
 **RAM Size**: {ram_size} GB  
 {f"**GPU**: {gpu_status}" if check_gpu else ""}  
-"""
+        """
     )
 
     if markdown:
