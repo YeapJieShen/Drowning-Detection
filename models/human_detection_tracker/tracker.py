@@ -12,13 +12,16 @@ class Tracker:
     tracks = None
 
     def __init__(self):
-        max_cosine_distance = 0.4
-        nn_budget = None
+        max_cosine_distance = 0.2
+        nn_budget = 100
+        max_iou_distance = 0.7
+        max_age = 70  # Increased from default to keep tracks longer
+        n_init = 3    # Decreased from default for faster confirmation
 
         encoder_model_filename = r'C:\Users\jrom\DataspellProjects\Drowning-Detection\models\human_detection_tracker\model_data\mars-small128.pb'
 
         metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
-        self.tracker = DeepSortTracker(metric)
+        self.tracker = DeepSortTracker(metric, max_iou_distance=max_iou_distance, max_age=max_age, n_init=n_init)
         self.encoder = gdet.create_box_encoder(encoder_model_filename, batch_size=1)
 
     def update(self, frame, detections):
@@ -46,7 +49,7 @@ class Tracker:
     def update_tracks(self):
         tracks = []
         for track in self.tracker.tracks:
-            if not track.is_confirmed() or track.time_since_update > 1:
+            if not track.is_confirmed() or track.time_since_update > 3:
                 continue
             bbox = track.to_tlbr()
 

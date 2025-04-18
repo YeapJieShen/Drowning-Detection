@@ -8,7 +8,7 @@ from ultralytics import YOLO
 from tracker import Tracker
 
 
-video_path = os.path.join('models', 'human_detection_tracker', 'test_videos', 'tinypeople.mp4')
+video_path = os.path.join('models', 'human_detection_tracker', 'test_videos', 'manyswimmers.mp4')
 video_out_path = os.path.join(os.path.dirname(video_path), 'out.mp4')
 print("Video Path:", video_path)
 
@@ -23,13 +23,13 @@ if not ret or frame is None:
 cap_out = cv2.VideoWriter(video_out_path, cv2.VideoWriter_fourcc(*'MP4V'), cap.get(cv2.CAP_PROP_FPS),
                           (frame.shape[1], frame.shape[0]))
 
-model = YOLO("yolo11m.pt")
+model = YOLO("C:\\Users\\jrom\\DataspellProjects\\Drowning-Detection\\models\\human_detection_yolo11s.pt")
 
 tracker = Tracker()
 
 colors = [(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)) for j in range(10)]
 
-detection_threshold = 0.5
+detection_threshold = 0.3
 
 # Create a named window for display
 cv2.namedWindow("Object Detection", cv2.WINDOW_NORMAL)
@@ -76,3 +76,4 @@ while ret:
 cap.release()
 cap_out.release()
 cv2.destroyAllWindows()
+#%%
