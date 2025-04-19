@@ -101,7 +101,7 @@ class TorchClassifier(torch.nn.Module):
             img = img.unsqueeze(0).to(self.device)
             output = self.model(img, prob=prob)
 
-        return output.squeeze(0).cpu().numpy()
+        return output.squeeze(0)
 
     def save(self, filename):
         if not filename.endswith('.pt'):
