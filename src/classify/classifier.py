@@ -44,8 +44,8 @@ class TorchClassifier(torch.nn.Module):
         if self.verbose:
             print(f"New model created: {self.model}")
 
-    def __call__(self, img, prob=False):
-        return self.predict(img, prob)
+    def __call__(self, img, transform=None, prob=False):
+        return self.predict(img, transform, prob)
 
     def _load_config(self, config):
         if isinstance(config, dict):
@@ -80,7 +80,7 @@ class TorchClassifier(torch.nn.Module):
         self.model.load_state_dict(checkpoint["model_state_dict"])
         self.model.eval()
 
-        if self.verbose():
+        if self.verbose:
             print(f"Model loaded from {weights}")
             print(f"Model configuration: {config}")
 
@@ -91,12 +91,17 @@ class TorchClassifier(torch.nn.Module):
         self.class_to_idx = self.trainer.class_to_idx
         return self.training_logs
 
-    def predict(self, img, prob=False):
+    def predict(self, img, transform=None, prob=False):
+        if transform:
+            img = transform(img)
+
         with torch.no_grad():
-            img = img.to(self.device)
+            self.model.eval()
+
+            img = img.unsqueeze(0).to(self.device)
             output = self.model(img, prob=prob)
 
-        return output.cpu().numpy()
+        return output.squeeze(0).cpu().numpy()
 
     def save(self, filename):
         if not filename.endswith('.pt'):

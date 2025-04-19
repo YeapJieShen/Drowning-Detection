@@ -9,7 +9,7 @@ import os
 from collections import defaultdict
 from tqdm import tqdm
 
-class AugmentedDataset(Dataset):
+class BalancedDataset(Dataset):
     def __init__(self, data_dir, original_dataset, aug_transform=None, enhance_transform=None):
         self.original_dataset = original_dataset
         self.data_dir = data_dir
@@ -135,7 +135,7 @@ class TorchClassifierTrainer:
             original_training_dataset = ImageFolder(train_dir, transform=None)
             original_training_dataset = self.stratified_subset(original_training_dataset, fraction=self.config.get('fraction', 1.0))
 
-            train_dataset = AugmentedDataset(
+            train_dataset = BalancedDataset(
                 train_dir, original_training_dataset, aug_transform=self.config['aug_transform'], enhance_transform=self.config['enhance_transform'])
         else:
             train_dataset = ImageFolder(
@@ -158,28 +158,6 @@ class TorchClassifierTrainer:
         self.val_loader = val_loader
         self.train_loader = train_loader
 
-        # targets = [label for _, label, _ in train_dataset.balanced_data]
-        # from collections import Counter
-
-        # class_counts = Counter(targets)
-        # idx_to_class = {v: k for k, v in train_dataset.original_dataset.class_to_idx.items()}
-        # named_counts = {idx_to_class[i]: count for i, count in class_counts.items()}
-
-        # print(named_counts)
-
-        # from collections import Counter
-
-        # targets = [label for _, label in val_dataset.imgs]
-        # class_counts = Counter(targets)
-
-        # # Optional: map to class names
-        # idx_to_class = {v: k for k, v in val_dataset.class_to_idx.items()}
-        # named_counts = {idx_to_class[i]: count for i, count in class_counts.items()}
-
-        # print(named_counts)
-
-
-
     def train(self):
         self._prepare_train()
 
@@ -193,6 +171,9 @@ class TorchClassifierTrainer:
         criterion = self.criterion
 
         for epoch in range(epochs):
+            if epoch == int(epochs * 0.5):
+                self.optimizer.param_groups[0]['lr'] *= 0.1
+
             train_metrics = self._train_epoch(
                 epoch, epochs, train_loader, optimizer, criterion)
             train_logs.append(train_metrics)
@@ -268,27 +249,35 @@ class TorchClassifierTrainer:
             all_labels.extend(targets.cpu().numpy())
             all_preds.extend(predicted.cpu().numpy())
 
-            macro_precision, macro_recall, macro_f1, _ = precision_recall_fscore_support(
-                all_labels, all_preds, average='macro', zero_division=0
-            )
-            weighted_precision, weighted_recall, weighted_f1, _ = precision_recall_fscore_support(
-                all_labels, all_preds, average='weighted', zero_division=0
-            )
-
-            progress.set_description(
-                ("%11s" + "%11.4g" * 8)
-                % (
-                    f"{epoch + 1}/{epochs}",
-                    running_loss / (batch_idx + 1),
-                    100 * correct_preds / total_preds,
-                    macro_precision,
-                    macro_recall,
-                    macro_f1,
-                    weighted_precision,
-                    weighted_recall,
-                    weighted_f1
+            if batch_idx % 2 == 0:
+                macro_precision, macro_recall, macro_f1, _ = precision_recall_fscore_support(
+                    all_labels, all_preds, average='macro', zero_division=0
                 )
-            )
+                weighted_precision, weighted_recall, weighted_f1, _ = precision_recall_fscore_support(
+                    all_labels, all_preds, average='weighted', zero_division=0
+                )
+
+                progress.set_description(
+                    ("%11s" + "%11.4g" * 8)
+                    % (
+                        f"{epoch + 1}/{epochs}",
+                        running_loss / (batch_idx + 1),
+                        100 * correct_preds / total_preds,
+                        macro_precision,
+                        macro_recall,
+                        macro_f1,
+                        weighted_precision,
+                        weighted_recall,
+                        weighted_f1
+                    )
+                )
+
+        macro_precision, macro_recall, macro_f1, _ = precision_recall_fscore_support(
+            all_labels, all_preds, average='macro', zero_division=0
+        )
+        weighted_precision, weighted_recall, weighted_f1, _ = precision_recall_fscore_support(
+            all_labels, all_preds, average='weighted', zero_division=0
+        )
 
         return {
             'loss': running_loss / len(dataloader),
