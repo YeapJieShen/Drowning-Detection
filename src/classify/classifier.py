@@ -10,7 +10,7 @@ MODEL_REGISTRY = {
 }
 
 class TorchClassifier(torch.nn.Module):
-    def __init__(self, model, model_path=None, config=None, device=None, verbose=False):
+    def __init__(self, model, model_path=None, config=None, device='auto', verbose=False):
         super().__init__()
 
         config = self._load_config(config) if config else None
@@ -20,7 +20,7 @@ class TorchClassifier(torch.nn.Module):
         self.config = config
 
         self.verbose = verbose
-        self.device = device if device else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = torch.device(device if device != 'auto' else 'cuda' if torch.cuda.is_available() else 'cpu')
 
         self.model = None
         self.trainer = None
