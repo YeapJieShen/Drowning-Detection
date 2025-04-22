@@ -216,7 +216,7 @@ def detect_drowning(frame, sensitivity, lookback):
 
             cv2.rectangle(annotated_frame, (x1, y1), (x2, y2), bgr, 2)
             cv2.putText(annotated_frame, f'{int(obj_id)} {predicted_class_name} {new_class_vec[predicted_class_idx] * 100:.2f}%', (
-                x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, bgr, 2)
 
             if obj_conf < 0.5:
                 continue
