@@ -1,8 +1,10 @@
 # Dataset paths
-path: C:/Users/PC/Downloads/Jie Shen/Drowning-Detection/data/yolo_training
+path: C:\Users\PC\Downloads\JieShen\Drowning-Detection/data/yolo_training
 train: images\train
 val: images\val
 
-# Classes
+# Number of classes
 nc: 1
-names: ['person']
+# Class names
+names:
+  0: person
