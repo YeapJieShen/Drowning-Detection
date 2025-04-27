@@ -136,7 +136,7 @@ class TorchClassifierTrainer:
             original_training_dataset = self.stratified_subset(original_training_dataset, fraction=self.config.get('fraction', 1.0))
 
             train_dataset = BalancedDataset(
-                train_dir, original_training_dataset, aug_transform=self.config['aug_transform'], enhance_transform=self.config['enhance_transform'])
+                train_dir, original_training_dataset, aug_transform=self.config.get('aug_transform', None), enhance_transform=self.config['enhance_transform'])
         else:
             train_dataset = ImageFolder(
                 train_dir, transform=self.config['enhance_transform'])
