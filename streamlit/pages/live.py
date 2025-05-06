@@ -33,7 +33,7 @@ def init():
         st.session_state["live_detection_model"] = YOLO(yolo_path)
 
     if "live_classification_model" not in st.session_state:
-        classification_path = models_path / "classification" / "CNN" / "test.pt"
+        classification_path = models_path / "classification" / "CNN" / "test_new.pt"
         st.session_state["live_classification_model"] = TorchClassifier(
             model="CNNClassifier", model_path=classification_path)
 
