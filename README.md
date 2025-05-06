@@ -1,23 +1,23 @@
-# Drowning Detection Project
+# 🏊‍♂️ Drowning Detection Project
 
-## Project Description
-This project is developed under the **BMCS2133 Image Processing** course as part of the course assessment project.
+## 📘 Project Description
+This project was developed as part of the **BMCS2133 Image Processing** course assessment.
 
-It aims to detect and classify human activities in swimming pools, specifically focusing on identifying:
-- **Swimming**
-- **Treading Water**
-- **Drowning**
+The main goal is to detect and classify human activities in swimming pool environments, with a focus on identifying:
+- 🏊 **Swimming**
+- 🚶 **Treading Water**
+- ⚠️ **Drowning**
 
-Using a combination of **YOLOv11** for human detection and a custom **CNN classifier**, we extract ROIs (Regions of Interest) and classify the person's activity for real-time drowning detection.
+We use a combination of **YOLOv11** for real-time human detection and a custom-built **CNN classifier** to extract Regions of Interest (ROIs) and classify the activity of each detected individual. This enables real-time drowning detection and alerting.
 
-## Project Members
+## 👥 Project Members
 - **Yeap Jie Shen**
 - **Gan Yee Jing**
 - **Jerome Subash A/L Joseph**
 
-From:
+**Programme:**  
 > Bachelor in Data Science (Honours)  
 > Year 3 Semester 2 – **Group 4**
 
-## Acknowledgements
-Special thanks to **Ts. Dr. Tan Chi Wee** for his continuous guidance and support throughout this project.
+## 🙏 Acknowledgements
+We would like to express our sincere appreciation to **Assoc. Prof. Ts. Dr. Tan Chi Wee** for his continuous support and invaluable guidance throughout the development of this project.
