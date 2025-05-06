@@ -71,7 +71,7 @@ def process_video():
     yolo_path = models_path / "detection" / "YOLO" / "jrom_yolo11n.pt"
     detection_model= YOLO(yolo_path)
 
-    classification_path = models_path / "classification" / "CNN" / "test.pt"
+    classification_path = models_path / "classification" / "CNN" / "test_new.pt"
     classification_model = TorchClassifier(
         model="CNNClassifier", model_path=classification_path)
 
@@ -177,7 +177,7 @@ def video_upload_tab():
                 st.download_button(
                     "Download Processed Video",
                     data=st.session_state["video_processed_file"],
-                    file_name=f"processed_{uploaded_file.name}",
+                    file_name=f"processed_{uploaded_file.name}." + uploaded_file.type.split('/')[1],
                     mime=uploaded_file.type,
                     use_container_width=True)
             with cols[1]:
