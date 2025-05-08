@@ -11,7 +11,7 @@ PAGE_STATES = [
     "live_siren", "live_activate_siren"
     "live_obj_confs_info", "live_class_confs_info",
     "live_drowning_log", "live_drowning_log_no_roi", 
-    "live_last_frame"
+    "live_last_frame", "live_available_cameras"
 ]
 
 
@@ -25,15 +25,25 @@ def init():
     if "live_camera_on" not in st.session_state:
         st.session_state["live_camera_on"] = False
 
+    if "live_available_cameras" not in st.session_state:
+        available_cameras = []
+        for index in range(5):
+            cap = cv2.VideoCapture(index, cv2.CAP_DSHOW)
+            if cap.isOpened():
+                available_cameras.append(index)
+                cap.release()
+
+        st.session_state["live_available_cameras"] = available_cameras
+
     assets_path = Path(__file__).parent.parent / "assets"
     models_path = assets_path / "models"
 
     if "live_detection_model" not in st.session_state:
-        yolo_path = models_path / "detection" / "YOLO" / "yolo11n.pt"
+        yolo_path = models_path / "detection" / "YOLO" / "yolo11n_best.pt"
         st.session_state["live_detection_model"] = YOLO(yolo_path)
 
     if "live_classification_model" not in st.session_state:
-        classification_path = models_path / "classification" / "CNN" / "test_new.pt"
+        classification_path = models_path / "classification" / "CNN" / "cnn_best.pt"
         st.session_state["live_classification_model"] = TorchClassifier(
             model="CNNClassifier", model_path=classification_path)
 
@@ -55,28 +65,61 @@ def init():
 
 
 def cleanup():
-    toggle_live_camera()
+    live_camera_on = st.session_state["live_camera_on"]
+
+    if live_camera_on: # Stop the live camera if on
+        off_live_camera()
 
     for state in PAGE_STATES:
         if state in st.session_state:
             del st.session_state[state]
 
 
+def off_live_camera():
+    st.session_state["live_VideoCapture"].release()
+
+    siren = st.session_state["live_siren"]
+    if siren.get_busy():
+        siren.fadeout(1000)  # Fade out the siren sound over 1 second
+
 def toggle_live_camera():
     live_camera_on = st.session_state["live_camera_on"]
 
     if live_camera_on: # Stop the live camera if on
-        st.session_state["live_VideoCapture"].release()
-
-        siren = st.session_state["live_siren"]
-        if siren.get_busy():
-            siren.fadeout(1000)  # Fade out the siren sound over 1 second
+        off_live_camera()
     else:
-        st.session_state["live_VideoCapture"] = cv2.VideoCapture(0)
+        selected_cam = st.session_state["live_selected_cam"]
+        st.session_state["live_VideoCapture"] = cv2.VideoCapture(selected_cam, cv2.CAP_DSHOW)
         st.session_state["live_obj_confs_info"] = {}
         st.session_state["live_class_confs_info"] = {}
 
     st.session_state["live_camera_on"] = not live_camera_on
+
+def reset_capture():
+    live_camera_on = st.session_state["live_camera_on"]
+
+    if "live_VideoCapture" in st.session_state:
+        st.session_state["live_VideoCapture"].release()
+
+    if live_camera_on:
+        selected_cam = st.session_state["live_selected_cam"]
+        st.session_state["live_VideoCapture"] = cv2.VideoCapture(selected_cam, cv2.CAP_DSHOW)
+
+def load_another_yolo_model():
+    from ultralytics import YOLO
+
+    MODEL_NAME_MAPPING = {
+        "Pretrained YOLO": "yolo11n.pt",
+        "Fine-Tuned YOLO": "yolo11n_best.pt",
+    }
+
+    selected_model = st.session_state["live_yolo_model"]
+    
+    assets_path = Path(__file__).parent.parent / "assets"
+    models_path = assets_path / "models"
+
+    yolo_path = models_path / "detection" / "YOLO" / MODEL_NAME_MAPPING[selected_model]
+    st.session_state["live_detection_model"] = YOLO(yolo_path)
 
 def log_drowning_info(log):
     timestamp, obj_id, drowning_prob, roi = log
@@ -101,7 +144,23 @@ def live_camera_tab():
 
     with st.expander("Detection Settings", expanded=False):
         sensitivity = st.slider(
-            "Sensitivity", min_value=0.01, max_value=1.0, value=0.5, step=0.01)
+            "Sensitivity", min_value=0.01, max_value=1.0, value=0.5, step=0.01,
+            help="Controls how quickly the system reacts to changes. Higher values make the alert respond faster to sudden movements (more sensitive), while lower values make it smoother and more stable."
+        )
+
+        selected_cam = st.selectbox(
+            "Select Camera",
+            options=st.session_state["live_available_cameras"],
+            on_change=reset_capture,
+            key="live_selected_cam"
+        )
+
+        yolo_model = st.selectbox(
+            "YOLO Model",
+            options=["Fine-Tuned YOLO", "Pretrained YOLO"],
+            on_change=load_another_yolo_model,
+            key="live_yolo_model"
+        )
 
     live_camera_on = st.session_state["live_camera_on"]
 

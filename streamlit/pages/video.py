@@ -68,10 +68,10 @@ def process_video():
     assets_path = Path(__file__).parent.parent / "assets"
     models_path = assets_path / "models"
 
-    yolo_path = models_path / "detection" / "YOLO" / "jrom_yolo11n.pt"
+    yolo_path = models_path / "detection" / "YOLO" / "yolo11n_best.pt"
     detection_model= YOLO(yolo_path)
 
-    classification_path = models_path / "classification" / "CNN" / "test_new.pt"
+    classification_path = models_path / "classification" / "CNN" / "cnn_best.pt"
     classification_model = TorchClassifier(
         model="CNNClassifier", model_path=classification_path)
 
