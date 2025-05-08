@@ -30,7 +30,7 @@ def home():
     > Year 3 Semester 2 – **Group 4**
 
     ### 🙏 Acknowledgements
-    Special thanks to **Ts. Dr. Tan Chi Wee** for his continuous guidance and support throughout this project.
+    Special thanks to **Assoc. Prof. Ts. Dr Tan Chi Wee** for his continuous guidance and support throughout this project.
 
     ### 🔗 GitHub Repository
     View our project code on [GitHub](https://github.com/YeapJieShen/Drowning-Detection)

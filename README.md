@@ -20,4 +20,4 @@ We use a combination of **YOLOv11** for real-time human detection and a custom-b
 > Year 3 Semester 2 – **Group 4**
 
 ## 🙏 Acknowledgements
-We would like to express our sincere appreciation to **Assoc. Prof. Ts. Dr. Tan Chi Wee** for his continuous support and invaluable guidance throughout the development of this project.
+We would like to express our sincere appreciation to **Assoc. Prof. Ts. Dr Tan Chi Wee** for his continuous support and invaluable guidance throughout the development of this project.
