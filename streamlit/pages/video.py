@@ -177,7 +177,7 @@ def video_upload_tab():
                 st.download_button(
                     "Download Processed Video",
                     data=st.session_state["video_processed_file"],
-                    file_name=f"processed_{uploaded_file.name}." + uploaded_file.type.split('/')[1],
+                    file_name=f"processed_{uploaded_file.name}",
                     mime=uploaded_file.type,
                     use_container_width=True)
             with cols[1]:
